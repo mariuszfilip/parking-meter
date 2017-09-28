@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 /**
@@ -33,29 +34,23 @@ public class DriverController {
         this.parkingStart = parkingStart;
     }
 
-    @RequestMapping(value = "start",method = RequestMethod.POST,produces = "application/json")
-    public ResponseEntity start(@Valid @RequestBody ParkingStartPayload parkingStartPayload ){
-        try{
-            return new ResponseEntity(this.parkingStart.run(parkingStartPayload),HttpStatus.CREATED);
-        }catch (Exception e){
-            return new ResponseEntity(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
+    @RequestMapping(value = "start", method = RequestMethod.POST, produces = "application/json")
+    public ResponseEntity start(@Valid @RequestBody ParkingStartPayload parkingStartPayload) {
+        return new ResponseEntity(this.parkingStart.run(parkingStartPayload), HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "stop")
-    public ResponseEntity stop(@RequestParam(value = "ticketId",required = true) Long ticketId){
-        try{
+    @RequestMapping(value = "stop", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity stop(@RequestParam(value = "ticketId", required = true) Long ticketId) {
+        try {
             this.parkingStop.run(ticketId);
             return new ResponseEntity(HttpStatus.OK);
-        }catch (TicketNotFoundException t){
+        } catch (TicketNotFoundException t) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
-        } catch (Exception e){
-            return new ResponseEntity(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-
-
-
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity exceptionFromSystem(HttpServletRequest req, Exception e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
