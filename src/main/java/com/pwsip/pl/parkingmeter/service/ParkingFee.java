@@ -19,7 +19,7 @@ public class ParkingFee {
         Period period = new Period(new DateTime(parkingUsage.getDateStart()), new DateTime(parkingUsage.getDateEnd()));
 
         double converter = 0;
-        BigDecimal sum = new BigDecimal(0);
+        BigDecimal sum = new BigDecimal(1);
         switch (parkingUsage.getDriver().getType()) {
             case Regular:
                 converter = 2;

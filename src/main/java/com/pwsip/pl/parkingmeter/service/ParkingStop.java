@@ -18,17 +18,21 @@ public class ParkingStop {
 
     private ParkingUsageRepository parkingUsageRepository;
 
+    private ParkingFee parkingFee;
+
     @Autowired
-    public ParkingStop(ParkingUsageRepository parkingUsageRepository) {
+    public ParkingStop(ParkingUsageRepository parkingUsageRepository, ParkingFee parkingFee) {
         this.parkingUsageRepository = parkingUsageRepository;
+        this.parkingFee = parkingFee;
     }
 
     public void run(Long ticketId) throws TicketNotFoundException {
         Optional<ParkingUsage> parkingUsage = this.parkingUsageRepository.findById(ticketId);
-        if(parkingUsage == null){
+        if(!parkingUsage.isPresent()){
             throw new TicketNotFoundException();
         }
         parkingUsage.get().setDateEnd(new Date());
+        parkingUsage.get().setFee(parkingFee.calculate(parkingUsage.get()));
         this.parkingUsageRepository.save(parkingUsage.get());
 
     }

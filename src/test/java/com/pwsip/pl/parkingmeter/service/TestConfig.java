@@ -4,6 +4,7 @@ import com.pwsip.pl.parkingmeter.repository.DriverRepository;
 import com.pwsip.pl.parkingmeter.repository.ParkingUsageRepository;
 import com.pwsip.pl.parkingmeter.repository.VehicleRepository;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -33,6 +34,19 @@ public class TestConfig {
     @Primary
     public VehicleRepository vehicleRepo() {
         return Mockito.mock(VehicleRepository.class);
+    }
+
+    @Bean
+    @Primary
+    @Qualifier("ParkingFeeMock")
+    public ParkingFee parkingFeeMock() {
+        return Mockito.mock(ParkingFee.class);
+    }
+
+    @Bean
+    @Qualifier("ParkingFee")
+    public ParkingFee parkingFee() {
+        return new ParkingFee();
     }
 
 }
